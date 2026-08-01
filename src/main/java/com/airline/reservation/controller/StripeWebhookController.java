@@ -1,9 +1,9 @@
 package com.airline.reservation.controller;
 
-import com.airline.reservation.dto.stripe.CreateCheckoutSessionRequestDto;
-import com.airline.reservation.dto.stripe.CreateCheckoutSessionResponseDto;
-import com.airline.reservation.dto.stripe.StripeWebhookRequestDto;
-import com.airline.reservation.dto.stripe.StripeWebhookResponseDto;
+import com.airline.reservation.dto.stripe.CheckoutRequest;
+import com.airline.reservation.dto.stripe.CheckoutResponse;
+import com.airline.reservation.dto.payment.StripeWebhookRequest;
+import com.airline.reservation.dto.payment.StripeWebhookResponse;
 import com.airline.reservation.service.StripeService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -43,12 +43,12 @@ public class StripeWebhookController {
             value = "/create-checkout-session",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CreateCheckoutSessionResponseDto> createCheckoutSession(
-            @Valid @RequestBody CreateCheckoutSessionRequestDto request) {
+    public ResponseEntity<CheckoutResponse> createCheckoutSession(
+            @Valid @RequestBody CheckoutRequest request) {
 
         log.info("POST /api/stripe/create-checkout-session: bookingId={}", request.getBookingId());
 
-        CreateCheckoutSessionResponseDto response = stripeService.createCheckoutSession(request);
+        CheckoutResponse response = stripeService.createCheckoutSession(request);
 
         HttpStatus status = response.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_GATEWAY;
         return ResponseEntity.status(status).body(response);
@@ -58,7 +58,7 @@ public class StripeWebhookController {
             value = "/webhook",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StripeWebhookResponseDto> handleWebhook(
+    public ResponseEntity<StripeWebhookResponse> handleWebhook(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signature) {
 
@@ -68,8 +68,8 @@ public class StripeWebhookController {
          * Receives and processes Stripe webhook events.
          */
 
-        StripeWebhookRequestDto request = new StripeWebhookRequestDto(payload, signature);
-        StripeWebhookResponseDto response = stripeService.handleWebhook(request);
+        StripeWebhookRequest request = new StripeWebhookRequest(payload, signature);
+        StripeWebhookResponse response = stripeService.handleWebhook(request);
 
         HttpStatus status = response.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(response);

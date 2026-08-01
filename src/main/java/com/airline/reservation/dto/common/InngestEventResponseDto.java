@@ -1,4 +1,4 @@
-package com.airline.reservation.dto.inngest;
+package com.airline.reservation.dto.common;
 
 import java.time.LocalDateTime;
 

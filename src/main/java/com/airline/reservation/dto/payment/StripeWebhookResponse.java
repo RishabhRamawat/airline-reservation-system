@@ -1,10 +1,10 @@
-package com.airline.reservation.dto.stripe;
+package com.airline.reservation.dto.payment;
 
 /**
  * Response DTO returned after processing a Stripe webhook event.
  * Contains the event details and processing result.
  */
-public class StripeWebhookResponseDto {
+public class StripeWebhookResponse {
 
     private String eventId;
 
@@ -22,10 +22,10 @@ public class StripeWebhookResponseDto {
 
     // Constructors
 
-    public StripeWebhookResponseDto() {
+    public StripeWebhookResponse() {
     }
 
-    public StripeWebhookResponseDto(
+    public StripeWebhookResponse(
             String eventId,
             String eventType,
             String paymentIntentId,
@@ -45,8 +45,8 @@ public class StripeWebhookResponseDto {
     /**
      * Creates a failure response.
      */
-    public static StripeWebhookResponseDto failure(String message) {
-        return new StripeWebhookResponseDto(
+    public static StripeWebhookResponse failure(String message) {
+        return new StripeWebhookResponse(
                 null, null, null, null, "FAILED", false, message);
     }
 

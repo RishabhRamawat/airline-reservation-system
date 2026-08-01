@@ -1,8 +1,7 @@
 package com.airline.reservation.controller;
 
-import com.airline.reservation.dto.inngest.InngestEventRequestDto;
-import com.airline.reservation.dto.inngest.InngestEventResponseDto;
-import com.airline.reservation.dto.inngest.EventType;
+import com.airline.reservation.dto.common.InngestEventRequestDto;
+import com.airline.reservation.dto.common.InngestEventResponseDto;
 import com.airline.reservation.service.InngestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

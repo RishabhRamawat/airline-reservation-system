@@ -1,4 +1,4 @@
-package com.airline.reservation.dto.stripe;
+package com.airline.reservation.dto.payment;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
  * Request DTO for processing Stripe webhook events.
  * Contains the raw webhook payload and its signature for verification.
  */
-public class StripeWebhookRequestDto {
+public class StripeWebhookRequest {
 
     @NotBlank(message = "Webhook payload must not be blank")
     private String payload;
@@ -16,10 +16,10 @@ public class StripeWebhookRequestDto {
 
     // Constructors
 
-    public StripeWebhookRequestDto() {
+    public StripeWebhookRequest() {
     }
 
-    public StripeWebhookRequestDto(String payload, String signature) {
+    public StripeWebhookRequest(String payload, String signature) {
         this.payload = payload;
         this.signature = signature;
     }

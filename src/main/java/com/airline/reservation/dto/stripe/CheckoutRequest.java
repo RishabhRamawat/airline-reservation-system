@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size;
  * The {@code amount} must be expressed in the smallest currency unit (e.g., paise for INR,
  * cents for USD).
  */
-public class CreateCheckoutSessionRequestDto {
+public class CheckoutRequest {
 
     /**
      * Internal booking identifier used as the Stripe {@code clientReferenceId}
@@ -63,10 +63,10 @@ public class CreateCheckoutSessionRequestDto {
     // Constructors
     // -------------------------------------------------------------------------
 
-    public CreateCheckoutSessionRequestDto() {
+    public CheckoutRequest() {
     }
 
-    public CreateCheckoutSessionRequestDto(
+    public CheckoutRequest(
             String bookingId,
             Long amount,
             String currency,

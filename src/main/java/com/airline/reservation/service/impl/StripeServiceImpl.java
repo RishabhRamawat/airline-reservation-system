@@ -1,9 +1,9 @@
 package com.airline.reservation.service.impl;
 
-import com.airline.reservation.dto.stripe.CreateCheckoutSessionRequestDto;
-import com.airline.reservation.dto.stripe.CreateCheckoutSessionResponseDto;
-import com.airline.reservation.dto.stripe.StripeWebhookRequestDto;
-import com.airline.reservation.dto.stripe.StripeWebhookResponseDto;
+import com.airline.reservation.dto.stripe.CheckoutRequest;
+import com.airline.reservation.dto.stripe.CheckoutResponse;
+import com.airline.reservation.dto.payment.StripeWebhookRequest;
+import com.airline.reservation.dto.payment.StripeWebhookResponse;
 import com.airline.reservation.service.StripeService;
 import com.stripe.StripeClient;
 import com.stripe.exception.SignatureVerificationException;
@@ -61,8 +61,8 @@ public class StripeServiceImpl implements StripeService {
      * Creates a Stripe Checkout Session for a booking.
      */
     @Override
-    public CreateCheckoutSessionResponseDto createCheckoutSession(
-            CreateCheckoutSessionRequestDto request) {
+    public CheckoutResponse createCheckoutSession(
+            CheckoutRequest request) {
 
         log.info("Creating Stripe Checkout Session for bookingId={}", request.getBookingId());
 
@@ -73,12 +73,12 @@ public class StripeServiceImpl implements StripeService {
             log.info("Checkout Session created: sessionId={}, bookingId={}",
                     session.getId(), request.getBookingId());
 
-            return CreateCheckoutSessionResponseDto.success(session.getId(), session.getUrl());
+            return CheckoutResponse.success(session.getId(), session.getUrl());
 
         } catch (StripeException ex) {
             log.error("Failed to create Checkout Session for bookingId={}: code={}, message={}",
                     request.getBookingId(), ex.getCode(), ex.getMessage());
-            return CreateCheckoutSessionResponseDto.failure(
+            return CheckoutResponse.failure(
                     "Payment session could not be created: " + ex.getMessage());
         }
     }
@@ -87,7 +87,7 @@ public class StripeServiceImpl implements StripeService {
      * Verifies and processes incoming Stripe webhook events.
      */
     @Override
-    public StripeWebhookResponseDto handleWebhook(StripeWebhookRequestDto request) {
+    public StripeWebhookResponse handleWebhook(StripeWebhookRequest request) {
 
         log.info("Received Stripe webhook event; verifying signature");
 
@@ -99,7 +99,7 @@ public class StripeServiceImpl implements StripeService {
                     webhookSecret);
         } catch (SignatureVerificationException ex) {
             log.warn("Stripe webhook signature verification failed: {}", ex.getMessage());
-            return StripeWebhookResponseDto.failure(
+            return StripeWebhookResponse.failure(
                     "Webhook signature verification failed: " + ex.getMessage());
         }
 
@@ -116,7 +116,7 @@ public class StripeServiceImpl implements StripeService {
      * Builds the Checkout Session request for Stripe.
      */
     private SessionCreateParams buildSessionCreateParams(
-            CreateCheckoutSessionRequestDto request) {
+            CheckoutRequest request) {
 
         SessionCreateParams.LineItem.PriceData.ProductData productData =
                 SessionCreateParams.LineItem.PriceData.ProductData.builder()
@@ -149,14 +149,14 @@ public class StripeServiceImpl implements StripeService {
     /**
      * Handles successful Checkout Session events.
      */
-    private StripeWebhookResponseDto handleCheckoutSessionCompleted(Event event) {
+    private StripeWebhookResponse handleCheckoutSessionCompleted(Event event) {
         log.info("Handling checkout.session.completed: eventId={}", event.getId());
 
         Optional<StripeObject> stripeObjectOpt = deserializeEventObject(event);
 
         if (stripeObjectOpt.isEmpty() || !(stripeObjectOpt.get() instanceof Session session)) {
             log.error("Could not deserialize Session from event: eventId={}", event.getId());
-            return StripeWebhookResponseDto.failure(
+            return StripeWebhookResponse.failure(
                     "Could not deserialize checkout session from webhook event");
         }
 
@@ -166,7 +166,7 @@ public class StripeServiceImpl implements StripeService {
         log.info("Payment succeeded: checkoutSessionId={}, paymentIntentId={}",
                 checkoutSessionId, paymentIntentId);
 
-        return new StripeWebhookResponseDto(
+        return new StripeWebhookResponse(
                 event.getId(),
                 event.getType(),
                 paymentIntentId,
@@ -179,7 +179,7 @@ public class StripeServiceImpl implements StripeService {
     /**
      * Handles failed payment events.
      */
-    private StripeWebhookResponseDto handlePaymentIntentFailed(Event event) {
+    private StripeWebhookResponse handlePaymentIntentFailed(Event event) {
         log.info("Handling payment_intent.payment_failed: eventId={}", event.getId());
 
         Optional<StripeObject> stripeObjectOpt = deserializeEventObject(event);
@@ -187,7 +187,7 @@ public class StripeServiceImpl implements StripeService {
         if (stripeObjectOpt.isEmpty()
                 || !(stripeObjectOpt.get() instanceof PaymentIntent paymentIntent)) {
             log.error("Could not deserialize PaymentIntent from event: eventId={}", event.getId());
-            return StripeWebhookResponseDto.failure(
+            return StripeWebhookResponse.failure(
                     "Could not deserialize payment intent from webhook event");
         }
 
@@ -198,7 +198,7 @@ public class StripeServiceImpl implements StripeService {
 
         log.warn("Payment failed: paymentIntentId={}, reason={}", paymentIntentId, failureMessage);
 
-        return new StripeWebhookResponseDto(
+        return new StripeWebhookResponse(
                 event.getId(),
                 event.getType(),
                 paymentIntentId,
@@ -211,11 +211,11 @@ public class StripeServiceImpl implements StripeService {
     /**
      * Returns a response for unsupported webhook events.
      */
-    private StripeWebhookResponseDto buildUnknownEventResponse(Event event) {
+    private StripeWebhookResponse buildUnknownEventResponse(Event event) {
         log.debug("Unhandled Stripe event type: eventId={}, type={}",
                 event.getId(), event.getType());
 
-        return new StripeWebhookResponseDto(
+        return new StripeWebhookResponse(
                 event.getId(),
                 event.getType(),
                 null,

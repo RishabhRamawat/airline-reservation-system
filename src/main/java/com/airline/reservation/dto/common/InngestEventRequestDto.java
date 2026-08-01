@@ -1,5 +1,6 @@
-package com.airline.reservation.dto.inngest;
+package com.airline.reservation.dto.common;
 
+import com.airline.reservation.event.EventType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 

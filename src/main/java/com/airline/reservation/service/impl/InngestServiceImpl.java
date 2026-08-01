@@ -1,8 +1,8 @@
 package com.airline.reservation.service.impl;
 
-import com.airline.reservation.dto.inngest.EventType;
-import com.airline.reservation.dto.inngest.InngestEventRequestDto;
-import com.airline.reservation.dto.inngest.InngestEventResponseDto;
+import com.airline.reservation.event.EventType;
+import com.airline.reservation.dto.common.InngestEventRequestDto;
+import com.airline.reservation.dto.common.InngestEventResponseDto;
 import com.airline.reservation.service.InngestService;
 import com.inngest.Inngest;
 import com.inngest.InngestEvent;

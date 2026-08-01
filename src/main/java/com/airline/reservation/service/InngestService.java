@@ -1,7 +1,7 @@
 package com.airline.reservation.service;
 
-import com.airline.reservation.dto.inngest.InngestEventRequestDto;
-import com.airline.reservation.dto.inngest.InngestEventResponseDto;
+import com.airline.reservation.dto.common.InngestEventRequestDto;
+import com.airline.reservation.dto.common.InngestEventResponseDto;
 /**
  * Service contract for publishing airline events to Inngest.
  * Hides the Inngest SDK from the controller layer.

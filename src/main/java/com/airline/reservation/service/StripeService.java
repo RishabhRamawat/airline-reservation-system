@@ -1,9 +1,9 @@
 package com.airline.reservation.service;
 
-import com.airline.reservation.dto.stripe.CreateCheckoutSessionRequestDto;
-import com.airline.reservation.dto.stripe.CreateCheckoutSessionResponseDto;
-import com.airline.reservation.dto.stripe.StripeWebhookRequestDto;
-import com.airline.reservation.dto.stripe.StripeWebhookResponseDto;
+import com.airline.reservation.dto.stripe.CheckoutRequest;
+import com.airline.reservation.dto.stripe.CheckoutResponse;
+import com.airline.reservation.dto.payment.StripeWebhookRequest;
+import com.airline.reservation.dto.payment.StripeWebhookResponse;
 
 /**
  * Service contract for Stripe payment operations.
@@ -17,7 +17,7 @@ public interface StripeService {
      * @param request checkout session details
      * @return checkout session response
      */
-    CreateCheckoutSessionResponseDto createCheckoutSession(CreateCheckoutSessionRequestDto request);
+    CheckoutResponse createCheckoutSession(CheckoutRequest request);
 
     /**
      * Verifies and processes a Stripe webhook event.
@@ -25,5 +25,5 @@ public interface StripeService {
      * @param request webhook payload and signature
      * @return webhook processing result
      */
-    StripeWebhookResponseDto handleWebhook(StripeWebhookRequestDto request);
+    StripeWebhookResponse handleWebhook(StripeWebhookRequest request);
 }

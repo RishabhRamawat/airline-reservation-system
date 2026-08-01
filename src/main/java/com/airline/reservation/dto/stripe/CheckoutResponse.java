@@ -4,7 +4,7 @@ package com.airline.reservation.dto.stripe;
  * Response DTO returned after creating a Stripe Checkout Session.
  * Contains the checkout URL and operation status.
  */
-public class CreateCheckoutSessionResponseDto {
+public class CheckoutResponse {
 
     private String sessionId;
 
@@ -14,10 +14,10 @@ public class CreateCheckoutSessionResponseDto {
 
     private String message;
 
-    public CreateCheckoutSessionResponseDto() {
+    public CheckoutResponse() {
     }
 
-    public CreateCheckoutSessionResponseDto(
+    public CheckoutResponse(
             String sessionId,
             String checkoutUrl,
             boolean success,
@@ -31,8 +31,8 @@ public class CreateCheckoutSessionResponseDto {
     /**
      * Creates a successful response.
      */
-    public static CreateCheckoutSessionResponseDto success(String sessionId, String checkoutUrl) {
-        return new CreateCheckoutSessionResponseDto(
+    public static CheckoutResponse success(String sessionId, String checkoutUrl) {
+        return new CheckoutResponse(
                 sessionId,
                 checkoutUrl,
                 true,
@@ -42,8 +42,8 @@ public class CreateCheckoutSessionResponseDto {
     /**
      * Creates a failure response .
      */
-    public static CreateCheckoutSessionResponseDto failure(String message) {
-        return new CreateCheckoutSessionResponseDto(null, null, false, message);
+    public static CheckoutResponse failure(String message) {
+        return new CheckoutResponse(null, null, false, message);
     }
 
     public String getSessionId() {
