@@ -9,14 +9,17 @@ import com.airline.reservation.service.PaymentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+// Activated automatically when PaymentService implementation is registered.
 @RestController
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor
 @Validated
+@ConditionalOnBean(PaymentService.class)
 public class PaymentController {
 
     private final PaymentService paymentService;
